@@ -138,8 +138,8 @@
             android:name="com.android.launcher3.LauncherProvider"
             android:authorities="com.sabailabs.launcher.settings"
             android:exported="true"
-            android:writePermission="com.android.launcher3.permission.WRITE_SETTINGS"
-            android:readPermission="com.android.launcher3.permission.READ_SETTINGS" />
+            android:writePermission="com.sabailabs.launcher.permission.WRITE_SETTINGS"
+            android:readPermission="com.sabailabs.launcher.permission.READ_SETTINGS" />
 
         <!-- ENABLE_FOR_TESTING
 
