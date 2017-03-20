@@ -32,7 +32,7 @@ android {
         applicationId 'com.sabailabs.launcher'
         manifestPlaceholders = [authority: "${applicationId}.settings"]
 
-        buildConfigField "String", "AUTHORITY", manifestPlaceholders.authority
+        buildConfigField "String", "AUTHORITY", "\"${manifestPlaceholders.authority}\""
         buildConfigField "boolean", "IS_DOGFOOD_BUILD", "true"
 
         testApplicationId 'com.android.launcher3.tests'
