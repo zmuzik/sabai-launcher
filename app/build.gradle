@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 
+
 android {
     compileSdkVersion 25
     buildToolsVersion '25.0.2'
@@ -12,6 +13,8 @@ android {
         versionName "1.0"
 
         applicationId 'com.sabailabs.launcher'
+        manifestPlaceholders = [authority: 'com.sabailabs.launcher.settings']
+
         testApplicationId 'com.android.launcher3.tests'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -44,7 +47,6 @@ dependencies {
 }
 
 protobuf {
-    // Configure the protoc executable
     protoc {
         artifact = 'com.google.protobuf:protoc:3.0.0-alpha-3'
 

@@ -20,7 +20,6 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher3">
-    <uses-sdk android:targetSdkVersion="23" android:minSdkVersion="21"/>
     <!--
     Manifest entries specific to Launcher3. This is merged with AndroidManifest-common.xml.
     Refer comments around specific entries on how to extend individual components.
@@ -136,7 +135,7 @@
         -->
         <provider
             android:name="com.android.launcher3.LauncherProvider"
-            android:authorities="com.sabailabs.launcher.settings"
+            android:authorities="${authority}"
             android:exported="true"
             android:writePermission="com.sabailabs.launcher.permission.WRITE_SETTINGS"
             android:readPermission="com.sabailabs.launcher.permission.READ_SETTINGS" />
