@@ -33,7 +33,7 @@ android {
         manifestPlaceholders = [authority: "${applicationId}.settings"]
 
         buildConfigField "String", "AUTHORITY", "\"${manifestPlaceholders.authority}\""
-        buildConfigField "boolean", "IS_DOGFOOD_BUILD", "true"
+        buildConfigField "boolean", "IS_DOGFOOD_BUILD", "false"
 
         testApplicationId 'com.android.launcher3.tests'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
