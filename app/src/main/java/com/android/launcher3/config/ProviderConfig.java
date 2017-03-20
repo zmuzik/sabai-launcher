@@ -16,9 +16,11 @@
 
 package com.android.launcher3.config;
 
+import com.android.launcher3.BuildConfig;
+
 public class ProviderConfig {
 
-    public static final String AUTHORITY = "com.sabailabs.launcher.settings".intern();
+    public static final String AUTHORITY = BuildConfig.AUTHORITY;
 
-    public static boolean IS_DOGFOOD_BUILD = true;
+    public static boolean IS_DOGFOOD_BUILD = BuildConfig.IS_DOGFOOD_BUILD;
 }
