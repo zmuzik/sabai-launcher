@@ -35,8 +35,8 @@ public final class FeatureFlags {
     public static final boolean QSB_ON_FIRST_SCREEN = true;
     // When enabled the all-apps icon is not added to the hotseat.
     public static final boolean NO_ALL_APPS_ICON = true;
-    // When enabled fling down gesture on the first workspace triggers search.
-    public static final boolean PULLDOWN_SEARCH = false;
+    // When enabled fling down gesture on the first workspace expands notifications bar.
+    public static final boolean PULLDOWN_NOTIF_BAR = true;
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     public static final boolean LIGHT_STATUS_BAR = false;
 }

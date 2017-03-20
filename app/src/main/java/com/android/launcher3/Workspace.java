@@ -85,6 +85,7 @@ import com.android.launcher3.util.WallpaperOffsetInterpolator;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -590,7 +591,7 @@ public class Workspace extends PagedView
         }
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
-        if (FeatureFlags.PULLDOWN_SEARCH) {
+        if (FeatureFlags.PULLDOWN_NOTIF_BAR) {
             firstPage.setOnTouchListener(new VerticalFlingDetector(mLauncher) {
                 // detect fling when touch started from empty space
                 @Override
@@ -598,7 +599,7 @@ public class Workspace extends PagedView
                     if (workspaceInModalState()) return false;
                     if (shouldConsumeTouch(v)) return true;
                     if (super.onTouch(v, ev)) {
-                        mLauncher.startSearch("", false, null, false);
+                        expandNotificationsBar();
                         return true;
                     }
                     return false;
@@ -610,7 +611,7 @@ public class Workspace extends PagedView
                 public boolean onTouch(View v, MotionEvent ev) {
                     if (shouldConsumeTouch(v)) return true;
                     if (super.onTouch(v, ev)) {
-                        mLauncher.startSearch("", false, null, false);
+                        expandNotificationsBar();
                         return true;
                     }
                     return false;
@@ -631,6 +632,17 @@ public class Workspace extends PagedView
         lp.canReorder = false;
         if (!firstPage.addViewToCellLayout(qsb, 0, getEmbeddedQsbId(), lp, true)) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
+        }
+    }
+
+    void expandNotificationsBar() {
+        try {
+            Object service = getContext().getSystemService("statusbar");
+            Class<?> statusBarManager = Class.forName("android.app.StatusBarManager");
+            Method expand = statusBarManager.getMethod("expandNotificationsPanel");
+            expand.invoke(service);
+        } catch (Throwable e) {
+            if (BuildConfig.DEBUG) e.printStackTrace();
         }
     }
 
