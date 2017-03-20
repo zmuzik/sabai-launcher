@@ -1,0 +1,4 @@
+#!/bin/bash
+
+appId=`cat app/build.gradle | grep "applicationId '" | head -n 1 | cut -d "'" -f 2`
+adb uninstall $appId
