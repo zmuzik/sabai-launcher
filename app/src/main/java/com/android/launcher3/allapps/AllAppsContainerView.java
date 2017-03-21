@@ -138,6 +138,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     private static final int MIN_ROWS_IN_MERGED_SECTION_PHONE = 3;
     private static final int MAX_NUM_MERGES_PHONE = 2;
+    private static final int REDUCED_NUM_APPS_PER_ROW = 3;
+
 
     private final Launcher mLauncher;
     private final AlphabeticalAppsList mApps;
@@ -160,6 +162,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     private int mSectionNamesMargin;
     private int mNumAppsPerRow;
+    private int mNaturalNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     private int mRecyclerViewBottomPadding;
     // This coordinate is relative to this container view
@@ -389,7 +392,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                     mNumPredictedAppsPerRow != grid.inv.numColumns) {
                 mNumAppsPerRow = grid.inv.numColumns;
                 mNumPredictedAppsPerRow = grid.inv.numColumns;
-
+                if (mNaturalNumAppsPerRow == 0) {
+                    mNaturalNumAppsPerRow = mNumAppsPerRow;
+                }
                 mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
                 mAdapter.setNumAppsPerRow(mNumAppsPerRow);
                 mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, new FullMergeAlgorithm());
@@ -738,5 +743,15 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     public boolean shouldRestoreImeState() {
         return !TextUtils.isEmpty(mSearchInput.getText());
+    }
+
+    public void setAllAppsPosition(AllAppsTransitionController.Position position) {
+        if (position == AllAppsTransitionController.Position.LEFT) {
+            mAdapter.setNumAppsPerRow(REDUCED_NUM_APPS_PER_ROW);
+        } else if (position == AllAppsTransitionController.Position.RIGHT) {
+            mAdapter.setNumAppsPerRow(REDUCED_NUM_APPS_PER_ROW);
+        } else {
+            mAdapter.setNumAppsPerRow(mNaturalNumAppsPerRow);
+        }
     }
 }

@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.Toast;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
@@ -95,9 +94,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private boolean mIsTranslateWithoutWorkspace = false;
     private AnimatorSet mDiscoBounceAnimation;
     private int mScreenWidth;
-    private AllAppsPosition mAllAppsPosition;
+    private Position mAllAppsPosition;
 
-    public enum AllAppsPosition {
+    public enum Position {
         CENTER,
         LEFT,
         RIGHT
@@ -199,13 +198,13 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     public void onDragStart(boolean start, float dragStartX) {
         if (start && isInDisallowRecatchBottomZone()) {
             if (dragStartX < mScreenWidth * .35f) {
-                mAllAppsPosition = AllAppsPosition.LEFT;
+                mAllAppsPosition = Position.LEFT;
             } else if (dragStartX > mScreenWidth * .65f) {
-                mAllAppsPosition = AllAppsPosition.RIGHT;
+                mAllAppsPosition = Position.RIGHT;
             } else {
-                mAllAppsPosition = AllAppsPosition.CENTER;
+                mAllAppsPosition = Position.CENTER;
             }
-            Toast.makeText(mLauncher, mAllAppsPosition.toString(), Toast.LENGTH_SHORT).show();
+            mLauncher.getAppsView().setAllAppsPosition(mAllAppsPosition);
         }
         mCaretController.onDragStart();
         cancelAnimation();
