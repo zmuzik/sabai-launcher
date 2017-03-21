@@ -60,9 +60,9 @@ public class VerticalPullDetector {
         if (newState == ScrollState.DRAGGING) {
             initializeDragging();
             if (mState == ScrollState.IDLE) {
-                reportDragStart(false /* recatch */);
+                reportDragStart(false /* recatch */, mGestureStartX);
             } else if (mState == ScrollState.SETTLING) {
-                reportDragStart(true /* recatch */);
+                reportDragStart(true /* recatch */, mGestureStartX);
             }
         }
         if (newState == ScrollState.SETTLING) {
@@ -93,6 +93,7 @@ public class VerticalPullDetector {
 
     private float mDownX;
     private float mDownY;
+    private float mGestureStartX;
 
     private float mLastY;
     private long mCurrentMillis;
@@ -113,7 +114,7 @@ public class VerticalPullDetector {
     }
 
     interface Listener {
-        void onDragStart(boolean start);
+        void onDragStart(boolean start, float dragStartX);
 
         boolean onDrag(float displacement, float velocity);
 
@@ -152,7 +153,8 @@ public class VerticalPullDetector {
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mDownX = ev.getX();
+
+                mDownX = mGestureStartX = ev.getX();
                 mDownY = ev.getY();
                 mLastDisplacement = 0;
                 mDisplacementY = 0;
@@ -196,8 +198,8 @@ public class VerticalPullDetector {
         setState(ScrollState.IDLE);
     }
 
-    private boolean reportDragStart(boolean recatch) {
-        mListener.onDragStart(!recatch);
+    private boolean reportDragStart(boolean recatch, float dragStartX) {
+        mListener.onDragStart(!recatch, dragStartX);
         if (DBG) {
             Log.d(TAG, "onDragStart recatch:" + recatch);
         }

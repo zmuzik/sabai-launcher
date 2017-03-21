@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.widget.Toast;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
@@ -93,6 +94,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     // Used in discovery bounce animation to provide the transition without workspace changing.
     private boolean mIsTranslateWithoutWorkspace = false;
     private AnimatorSet mDiscoBounceAnimation;
+    private int mScreenWidth;
+    private AllAppsPosition mAllAppsPosition;
+
+    public enum AllAppsPosition {
+        CENTER,
+        LEFT,
+        RIGHT
+    }
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
@@ -187,7 +196,17 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     @Override
-    public void onDragStart(boolean start) {
+    public void onDragStart(boolean start, float dragStartX) {
+        if (start && isInDisallowRecatchBottomZone()) {
+            if (dragStartX < mScreenWidth * .35f) {
+                mAllAppsPosition = AllAppsPosition.LEFT;
+            } else if (dragStartX > mScreenWidth * .65f) {
+                mAllAppsPosition = AllAppsPosition.RIGHT;
+            } else {
+                mAllAppsPosition = AllAppsPosition.CENTER;
+            }
+            Toast.makeText(mLauncher, mAllAppsPosition.toString(), Toast.LENGTH_SHORT).show();
+        }
         mCaretController.onDragStart();
         cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
@@ -529,6 +548,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             mShiftRange = bottom;
         }
         setProgress(mProgress);
+    }
+
+    public void setWidth(int width) {
+        this.mScreenWidth = width;
     }
 
     static class ScrollInterpolator implements Interpolator {

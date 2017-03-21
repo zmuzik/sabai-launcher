@@ -408,6 +408,8 @@ public class Launcher extends Activity
 
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
+        int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
+        mAllAppsController.setWidth(screenWidth);
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this, mAllAppsController);
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
