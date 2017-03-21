@@ -780,19 +780,18 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
 
     public void setAllAppsPosition(AllAppsTransitionController.Position position) {
-
-        if (position == AllAppsTransitionController.Position.LEFT) {
-            mAdapter.setNumAppsPerRow(REDUCED_NUM_APPS_PER_ROW);
-            mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsLeft);
-            mElevationController.setShouldElevate(false);
-        } else if (position == AllAppsTransitionController.Position.RIGHT) {
-            mAdapter.setNumAppsPerRow(REDUCED_NUM_APPS_PER_ROW);
-            mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsRight);
-            mElevationController.setShouldElevate(false);
-        } else {
+        if (position == AllAppsTransitionController.Position.CENTER) {
             mAdapter.setNumAppsPerRow(mNaturalNumAppsPerRow);
-            mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsCenter);
             mElevationController.setShouldElevate(true);
+            mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsCenter);
+        } else {
+            mAdapter.setNumAppsPerRow(REDUCED_NUM_APPS_PER_ROW);
+            mElevationController.setShouldElevate(false);
+            if (position == AllAppsTransitionController.Position.LEFT) {
+                mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsLeft);
+            } else if (position == AllAppsTransitionController.Position.RIGHT) {
+                mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsRight);
+            }
         }
     }
 
