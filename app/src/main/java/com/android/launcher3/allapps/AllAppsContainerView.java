@@ -28,6 +28,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -192,6 +193,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         int mReducedAllAppsWidth = res.getDimensionPixelSize(R.dimen.all_apps_reduced_width);
         int mReducedAllAppsHeight= res.getDimensionPixelSize(R.dimen.all_apps_reduced_height);
+        mReducedAllAppsHeight += getSoftButtonsBarHeight();
         mApps = new AlphabeticalAppsList(context);
         mAdapter = new AllAppsGridAdapter(mLauncher, mApps, mLauncher, this);
         mApps.setAdapter(mAdapter);
@@ -789,5 +791,14 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             mAdapter.setNumAppsPerRow(mNaturalNumAppsPerRow);
             mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsCenter);
         }
+    }
+
+    private int getSoftButtonsBarHeight() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        mLauncher.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int usableHeight = metrics.heightPixels;
+        mLauncher.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        int realHeight = metrics.heightPixels;
+        return (realHeight > usableHeight) ? (realHeight - usableHeight) : 0;
     }
 }
