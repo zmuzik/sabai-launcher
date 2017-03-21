@@ -780,6 +780,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
 
     public void setAllAppsPosition(AllAppsTransitionController.Position position) {
+        mAppsRecyclerView.setPosition(position);
         if (position == AllAppsTransitionController.Position.CENTER) {
             mAdapter.setNumAppsPerRow(mNaturalNumAppsPerRow);
             mElevationController.setShouldElevate(true);

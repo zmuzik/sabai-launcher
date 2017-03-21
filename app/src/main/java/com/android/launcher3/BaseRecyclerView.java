@@ -22,6 +22,8 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+
+import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.util.Thunk;
 
 
@@ -47,6 +49,7 @@ public abstract class BaseRecyclerView extends RecyclerView
     private int mDownY;
     private int mLastY;
     protected Rect mBackgroundPadding = new Rect();
+    private AllAppsTransitionController.Position mPosition;
 
     public BaseRecyclerView(Context context) {
         this(context, null);
@@ -253,11 +256,17 @@ public abstract class BaseRecyclerView extends RecyclerView
      * @return the x position for the scrollbar thumb
      */
     protected int getScrollBarX() {
-        if (Utilities.isRtl(getResources())) {
+        if ((Utilities.isRtl(getResources())
+                && mPosition == AllAppsTransitionController.Position.CENTER)
+                || mPosition == AllAppsTransitionController.Position.LEFT) {
             return mBackgroundPadding.left;
         } else {
             return getWidth() - mBackgroundPadding.right - mScrollbar.getThumbWidth();
         }
+    }
+
+    public void setPosition(AllAppsTransitionController.Position position) {
+        mPosition = position;
     }
 
     /**
