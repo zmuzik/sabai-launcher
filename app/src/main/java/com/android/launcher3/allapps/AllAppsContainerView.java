@@ -784,12 +784,15 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         if (position == AllAppsTransitionController.Position.LEFT) {
             mAdapter.setNumAppsPerRow(REDUCED_NUM_APPS_PER_ROW);
             mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsLeft);
+            mElevationController.setShouldElevate(false);
         } else if (position == AllAppsTransitionController.Position.RIGHT) {
             mAdapter.setNumAppsPerRow(REDUCED_NUM_APPS_PER_ROW);
             mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsRight);
+            mElevationController.setShouldElevate(false);
         } else {
             mAdapter.setNumAppsPerRow(mNaturalNumAppsPerRow);
             mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsCenter);
+            mElevationController.setShouldElevate(true);
         }
     }
 

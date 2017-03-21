@@ -21,6 +21,7 @@ import com.android.launcher3.R;
 public abstract class HeaderElevationController extends RecyclerView.OnScrollListener {
 
     private int mCurrentY = 0;
+    private boolean mShouldElevate = true;
 
     public void reset() {
         mCurrentY = 0;
@@ -29,13 +30,17 @@ public abstract class HeaderElevationController extends RecyclerView.OnScrollLis
 
     @Override
     public final void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        mCurrentY = ((BaseRecyclerView) recyclerView).getCurrentScrollY();
+        mCurrentY = mShouldElevate ? ((BaseRecyclerView) recyclerView).getCurrentScrollY() : 0;
         onScroll(mCurrentY);
     }
 
     public void updateBackgroundPadding(Rect bgPadding) { }
 
     abstract void onScroll(int scrollY);
+
+    public void setShouldElevate(boolean shouldElevate) {
+        mShouldElevate = shouldElevate;
+    }
 
     public static class ControllerV16 extends HeaderElevationController {
 
