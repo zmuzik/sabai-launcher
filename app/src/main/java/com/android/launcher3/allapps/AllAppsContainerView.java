@@ -28,11 +28,13 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
@@ -151,6 +153,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private final Rect mContentBounds = new Rect();
 
     private AllAppsRecyclerView mAppsRecyclerView;
+    private AllAppsRecyclerViewContainerView mAppsRecyclerViewParent;
     private AllAppsSearchBarController mSearchBarController;
 
     private View mSearchContainer;
@@ -165,6 +168,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private int mNaturalNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     private int mRecyclerViewBottomPadding;
+
+    FrameLayout.LayoutParams mAllAppsParentParamsLeft;
+    FrameLayout.LayoutParams mAllAppsParentParamsRight;
+    FrameLayout.LayoutParams mAllAppsParentParamsCenter;
+
     // This coordinate is relative to this container view
     private final Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
 
@@ -182,6 +190,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         mLauncher = Launcher.getLauncher(context);
         mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
+        int mReducedAllAppsWidth = res.getDimensionPixelSize(R.dimen.all_apps_reduced_width);
+        int mReducedAllAppsHeight= res.getDimensionPixelSize(R.dimen.all_apps_reduced_height);
         mApps = new AlphabeticalAppsList(context);
         mAdapter = new AllAppsGridAdapter(mLauncher, mApps, mLauncher, this);
         mApps.setAdapter(mAdapter);
@@ -197,6 +207,24 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
+
+        mAllAppsParentParamsLeft = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT);
+        mAllAppsParentParamsLeft.width = mReducedAllAppsWidth;
+        mAllAppsParentParamsLeft.height = mReducedAllAppsHeight;
+        mAllAppsParentParamsLeft.gravity = Gravity.LEFT | Gravity.BOTTOM;
+
+        mAllAppsParentParamsRight = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT);
+        mAllAppsParentParamsRight.width = mReducedAllAppsWidth;
+        mAllAppsParentParamsRight.height = mReducedAllAppsHeight;
+        mAllAppsParentParamsRight.gravity = Gravity.RIGHT | Gravity.BOTTOM;
+
+        mAllAppsParentParamsCenter = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT);
+        mAllAppsParentParamsCenter.width = LayoutParams.MATCH_PARENT;
+        mAllAppsParentParamsCenter.height = LayoutParams.MATCH_PARENT;
+        mAllAppsParentParamsCenter.gravity = Gravity.CENTER;
     }
 
     /**
@@ -358,6 +386,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.setHasFixedSize(true);
         mAppsRecyclerView.addOnScrollListener(mElevationController);
         mAppsRecyclerView.setElevationController(mElevationController);
+
+        mAppsRecyclerViewParent = (AllAppsRecyclerViewContainerView) findViewById(R.id.main_content);
 
         if (mItemDecoration != null) {
             mAppsRecyclerView.addItemDecoration(mItemDecoration);
@@ -745,13 +775,19 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         return !TextUtils.isEmpty(mSearchInput.getText());
     }
 
+
+
     public void setAllAppsPosition(AllAppsTransitionController.Position position) {
+
         if (position == AllAppsTransitionController.Position.LEFT) {
             mAdapter.setNumAppsPerRow(REDUCED_NUM_APPS_PER_ROW);
+            mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsLeft);
         } else if (position == AllAppsTransitionController.Position.RIGHT) {
             mAdapter.setNumAppsPerRow(REDUCED_NUM_APPS_PER_ROW);
+            mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsRight);
         } else {
             mAdapter.setNumAppsPerRow(mNaturalNumAppsPerRow);
+            mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsCenter);
         }
     }
 }

@@ -77,8 +77,10 @@
     <dimen name="all_apps_caret_shadow_spread">1dp</dimen>
     <dimen name="all_apps_caret_size">13dp</dimen>
     <dimen name="all_apps_caret_workspace_offset">4dp</dimen>
+    <dimen name="all_apps_reduced_width">240dp</dimen>
+    <dimen name="all_apps_reduced_height">470dp</dimen>
 
-<!-- Search bar in All Apps -->
+    <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
     <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
     <dimen name="all_apps_header_shadow_height">6dp</dimen>
