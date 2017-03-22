@@ -56,6 +56,9 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [authority: "com.sabailabs.launcher.debug.settings"]
+            buildConfigField "String", "AUTHORITY", "\"com.sabailabs.launcher.debug.settings\""
         }
         release {
             minifyEnabled true
