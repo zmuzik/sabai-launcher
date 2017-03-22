@@ -29,6 +29,7 @@ import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -191,9 +192,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         mLauncher = Launcher.getLauncher(context);
         mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
-        int mReducedAllAppsWidth = res.getDimensionPixelSize(R.dimen.all_apps_reduced_width);
-        int mReducedAllAppsHeight= res.getDimensionPixelSize(R.dimen.all_apps_reduced_height);
-        mReducedAllAppsHeight += getSoftButtonsBarHeight();
         mApps = new AlphabeticalAppsList(context);
         mAdapter = new AllAppsGridAdapter(mLauncher, mApps, mLauncher, this);
         mApps.setAdapter(mAdapter);
@@ -209,6 +207,16 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
+
+        int mReducedAllAppsWidth = res.getDimensionPixelSize(R.dimen.all_apps_reduced_width);
+        int searchbar = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_height);
+        int gridOffset = res.getDimensionPixelSize(R.dimen.all_apps_grid_section_y_offset);
+        int cellSize = mLauncher.getDeviceProfile().getCellSize().y;
+
+        int mReducedAllAppsHeight = searchbar;
+        mReducedAllAppsHeight += gridOffset;
+        mReducedAllAppsHeight += 4 * cellSize;
+        mReducedAllAppsHeight += getSoftButtonsBarHeight();
 
         mAllAppsParentParamsLeft = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT);
@@ -787,6 +795,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsCenter);
         } else {
             mAdapter.setNumAppsPerRow(REDUCED_NUM_APPS_PER_ROW);
+            //nexus 5x
+            //height = 231 + 24 + 4 * 278 + getSoftButtonsBarHeight();
+
             mElevationController.setShouldElevate(false);
             if (position == AllAppsTransitionController.Position.LEFT) {
                 mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsLeft);
