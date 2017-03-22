@@ -23,6 +23,9 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.2'
 
+    Properties customProps = new Properties()
+    customProps.load(new FileInputStream("../keystore/properties"))
+
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 25
@@ -37,16 +40,33 @@ android {
 
         testApplicationId 'com.android.launcher3.tests'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        archivesBaseName = "slauncher-$versionCode"
     }
+
+    signingConfigs {
+        release {
+            storeFile file("../../keystore/keystore")
+            keyAlias customProps.KEY_ALIAS
+            storePassword customProps.STORE_PASSWORD
+            keyPassword customProps.KEY_PASSWORD
+        }
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
+        }
+        release {
+            minifyEnabled true
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
     lintOptions {
         checkReleaseBuilds false
-        //abortOnError false
+        abortOnError false
     }
 }
 
