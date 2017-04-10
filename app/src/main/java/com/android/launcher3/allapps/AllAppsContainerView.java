@@ -796,7 +796,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             mElevationController.setShouldElevate(true);
             mAppsRecyclerViewParent.setLayoutParams(mAllAppsParentParamsCenter);
         } else {
-            mAdapter.setNumAppsPerRow(REDUCED_NUM_APPS_PER_ROW);
+            mAdapter.setNumAppsPerRow(REDUCED_NUM_COLUMNS);
             //nexus 5x
             //height = 231 + 24 + 4 * 278 + getSoftButtonsBarHeight();
 
