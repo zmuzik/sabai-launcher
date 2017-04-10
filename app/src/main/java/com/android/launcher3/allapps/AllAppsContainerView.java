@@ -29,7 +29,6 @@ import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -75,8 +74,8 @@ final class FullMergeAlgorithm implements AlphabeticalAppsList.MergeAlgorithm {
 
     @Override
     public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
-            AlphabeticalAppsList.SectionInfo withSection,
-            int sectionAppCount, int numAppsPerRow, int mergeCount) {
+                                   AlphabeticalAppsList.SectionInfo withSection,
+                                   int sectionAppCount, int numAppsPerRow, int mergeCount) {
         // Don't merge the predicted apps
         if (section.firstAppItem.viewType != AllAppsGridAdapter.VIEW_TYPE_ICON) {
             return false;
@@ -107,8 +106,8 @@ final class SimpleSectionMergeAlgorithm implements AlphabeticalAppsList.MergeAlg
 
     @Override
     public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
-            AlphabeticalAppsList.SectionInfo withSection,
-            int sectionAppCount, int numAppsPerRow, int mergeCount) {
+                                   AlphabeticalAppsList.SectionInfo withSection,
+                                   int sectionAppCount, int numAppsPerRow, int mergeCount) {
         // Don't merge the predicted apps
         if (section.firstAppItem.viewType != AllAppsGridAdapter.VIEW_TYPE_ICON) {
             return false;
@@ -142,7 +141,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     private static final int MIN_ROWS_IN_MERGED_SECTION_PHONE = 3;
     private static final int MAX_NUM_MERGES_PHONE = 2;
-    private static final int REDUCED_NUM_APPS_PER_ROW = 3;
+    private static final int REDUCED_NUM_COLUMNS = 4;
+    private static final int REDUCED_NUM_ROWS = 4;
 
 
     private final Launcher mLauncher;
@@ -208,14 +208,16 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
 
-        int mReducedAllAppsWidth = res.getDimensionPixelSize(R.dimen.all_apps_reduced_width);
+        //int mReducedAllAppsWidth = res.getDimensionPixelSize(R.dimen.all_apps_reduced_width);
         int searchbar = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_height);
         int gridOffset = res.getDimensionPixelSize(R.dimen.all_apps_grid_section_y_offset);
-        int cellSize = mLauncher.getDeviceProfile().getCellSize().y;
+        int cellSizeX = mLauncher.getDeviceProfile().getCellSize().x;
+        int mReducedAllAppsWidth = cellSizeX * REDUCED_NUM_COLUMNS;
 
+        int cellSizeY = mLauncher.getDeviceProfile().getCellSize().y;
         int mReducedAllAppsHeight = searchbar;
         mReducedAllAppsHeight += gridOffset;
-        mReducedAllAppsHeight += 4 * cellSize;
+        mReducedAllAppsHeight += REDUCED_NUM_ROWS * cellSizeY;
         mReducedAllAppsHeight += getSoftButtonsBarHeight();
 
         mAllAppsParentParamsLeft = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
@@ -416,7 +418,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     @Override
-    public void onBoundsChanged(Rect newBounds) { }
+    public void onBoundsChanged(Rect newBounds) {
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -650,7 +653,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     @Override
     public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
-            boolean success) {
+                                boolean success) {
         if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
                 !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
             // Exit spring loaded mode if we have not successfully dropped or have not handled the
@@ -684,7 +687,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     @Override
     public void onLauncherTransitionPrepare(Launcher l, boolean animated,
-            boolean multiplePagesVisible) {
+                                            boolean multiplePagesVisible) {
         // Do nothing
     }
 
@@ -784,7 +787,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     public boolean shouldRestoreImeState() {
         return !TextUtils.isEmpty(mSearchInput.getText());
     }
-
 
 
     public void setAllAppsPosition(AllAppsTransitionController.Position position) {
