@@ -60,3 +60,4 @@ captures/
 google-services.json
 
 .idea/vcs.xml
+.idea/kotlinc.xml
