@@ -197,9 +197,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     @Override
     public void onDragStart(boolean start, float dragStartX) {
         if (start && isInDisallowRecatchBottomZone()) {
-            if (dragStartX < mScreenWidth * .35f) {
+            if (dragStartX < mScreenWidth * .4f) {
                 mAllAppsPosition = Position.LEFT;
-            } else if (dragStartX > mScreenWidth * .65f) {
+            } else if (dragStartX > mScreenWidth * .6f) {
                 mAllAppsPosition = Position.RIGHT;
             } else {
                 mAllAppsPosition = Position.CENTER;
