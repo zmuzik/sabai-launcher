@@ -2600,6 +2600,7 @@ public class Launcher extends Activity
             mWaitingForResume = (BubbleTextView) v;
             mWaitingForResume.setStayPressed(true);
         }
+        showWorkspace(false);
     }
 
     /**
