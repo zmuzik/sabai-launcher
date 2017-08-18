@@ -5,7 +5,7 @@ appId=`cat app/build.gradle | grep "applicationId '" | head -n 1 | cut -d "'" -f
 echo "Uninstalling $appId".debug
 
 if [[ $1 == "e" || $1 == "d" ]]; then
-  adb -$1 uninstall $appId
+  adb -$1 uninstall $appId.debug
 else
-  adb uninstall $appId
+  adb uninstall $appId.debug
 fi
