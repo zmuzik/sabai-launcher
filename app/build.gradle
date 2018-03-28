@@ -23,8 +23,10 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.3'
 
-    Properties customProps = new Properties()
-    customProps.load(new FileInputStream("../keystore/properties"))
+    def propsFile = rootProject.file("../secrets/properties")
+    Properties props = new Properties()
+    props.load(new FileInputStream(propsFile))
+
 
     defaultConfig {
         minSdkVersion 21
@@ -46,10 +48,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("../../keystore/keystore")
-            keyAlias customProps.KEY_ALIAS
-            storePassword customProps.STORE_PASSWORD
-            keyPassword customProps.KEY_PASSWORD
+            storeFile file("../../secrets/keystore")
+            keyAlias props.KEY_ALIAS
+            storePassword props.STORE_PASSWORD
+            keyPassword props.KEY_PASSWORD
         }
     }
 

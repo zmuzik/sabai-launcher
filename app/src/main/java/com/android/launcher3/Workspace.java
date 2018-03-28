@@ -229,9 +229,6 @@ public class Workspace extends PagedView
     public static final int QSB_ALPHA_INDEX_PAGE_SCROLL = 2;
     public static final int QSB_ALPHA_INDEX_OVERLAY_SCROLL = 3;
 
-
-    MultiStateAlphaController mQsbAlphaController;
-
     @ViewDebug.ExportedProperty(category = "launcher")
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
@@ -510,7 +507,6 @@ public class Workspace extends PagedView
     public void initParentViews(View parent) {
         super.initParentViews(parent);
         mPageIndicator.setAccessibilityDelegate(new OverviewAccessibilityDelegate());
-        mQsbAlphaController = new MultiStateAlphaController(mLauncher.getQsbContainer(), 4);
     }
 
     private int getDefaultPage() {
@@ -576,19 +572,12 @@ public class Workspace extends PagedView
         return mTouchState != TOUCH_STATE_REST;
     }
 
-    private int getEmbeddedQsbId() {
-        return mLauncher.getDeviceProfile().isVerticalBarLayout()
-                ? R.id.qsb_container : R.id.workspace_blocked_row;
-    }
 
     /**
      * Initializes and binds the first page
      * @param qsb an exisitng qsb to recycle or null.
      */
-    public void bindAndInitFirstWorkspaceScreen(View qsb) {
-        if (!FeatureFlags.QSB_ON_FIRST_SCREEN) {
-            return;
-        }
+    public void bindAndInitFirstWorkspaceScreen() {
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
         if (FeatureFlags.PULLDOWN_NOTIF_BAR) {
@@ -618,21 +607,10 @@ public class Workspace extends PagedView
                 }
             });
         }
-        // Always add a QSB on the first screen.
-        if (qsb == null) {
-            // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
-            // edges, we do not need a full width QSB.
-            qsb = mLauncher.getLayoutInflater().inflate(
-                    mLauncher.getDeviceProfile().isVerticalBarLayout()
-                            ? R.layout.qsb_container : R.layout.qsb_blocker_view,
-                    firstPage, false);
-        }
+
 
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);
         lp.canReorder = false;
-        if (!firstPage.addViewToCellLayout(qsb, 0, getEmbeddedQsbId(), lp, true)) {
-            Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
-        }
     }
 
     void expandNotificationsBar() {
@@ -657,13 +635,6 @@ public class Workspace extends PagedView
         if (getChildCount() > 0) {
             CellLayout firstPage = (CellLayout) getChildAt(0);
             int cellHeight = firstPage.getCellHeight();
-
-            View qsbContainer = mLauncher.getQsbContainer();
-            ViewGroup.LayoutParams lp = qsbContainer.getLayoutParams();
-            if (cellHeight > 0 && lp.height != cellHeight) {
-                lp.height = cellHeight;
-                qsbContainer.setLayoutParams(lp);
-            }
         }
     }
 
@@ -679,19 +650,13 @@ public class Workspace extends PagedView
             removeCustomContentPage();
         }
 
-        // Recycle the QSB widget
-        View qsb = findViewById(getEmbeddedQsbId());
-        if (qsb != null) {
-            ((ViewGroup) qsb.getParent()).removeView(qsb);
-        }
-
         // Remove the pages and clear the screen models
         removeAllViews();
         mScreenOrder.clear();
         mWorkspaceScreens.clear();
 
         // Ensure that the first page is always present
-        bindAndInitFirstWorkspaceScreen(qsb);
+        bindAndInitFirstWorkspaceScreen();
 
         // Re-enable the layout transitions
         enableLayoutTransitions();
@@ -1036,8 +1001,7 @@ public class Workspace extends PagedView
             long id = mWorkspaceScreens.keyAt(i);
             CellLayout cl = mWorkspaceScreens.valueAt(i);
             // FIRST_SCREEN_ID can never be removed.
-            if ((!FeatureFlags.QSB_ON_FIRST_SCREEN || id > FIRST_SCREEN_ID)
-                    && cl.getShortcutsAndWidgets().getChildCount() == 0) {
+            if (cl.getShortcutsAndWidgets().getChildCount() == 0) {
                 removeScreens.add(id);
             }
         }
@@ -1449,10 +1413,6 @@ public class Workspace extends PagedView
     }
 
     private void onWorkspaceOverallScrollChanged() {
-        if (!mIgnoreQsbScroll) {
-            mLauncher.getQsbContainer().setTranslationX(
-                    mOverlayTranslation + mFirstPageScrollX - getScrollX());
-        }
     }
 
     @Override
@@ -1530,7 +1490,6 @@ public class Workspace extends PagedView
         setHotseatTranslationAndAlpha(Direction.X, transX, alpha);
         onWorkspaceOverallScrollChanged();
 
-        mQsbAlphaController.setAlphaAtIndex(alpha, QSB_ALPHA_INDEX_OVERLAY_SCROLL);
     }
 
     /**
@@ -1540,9 +1499,6 @@ public class Workspace extends PagedView
      */
     public void setWorkspaceYTranslationAndAlpha(float translation, float alpha) {
         setWorkspaceTranslationAndAlpha(Direction.Y, translation, alpha);
-
-        mLauncher.getQsbContainer().setTranslationY(translation);
-        mQsbAlphaController.setAlphaAtIndex(alpha, QSB_ALPHA_INDEX_Y_TRANSLATION);
     }
 
     /**
@@ -1750,10 +1706,6 @@ public class Workspace extends PagedView
                     float scrollProgress = getScrollProgress(screenCenter, child, i);
                     float alpha = 1 - Math.abs(scrollProgress);
                     child.getShortcutsAndWidgets().setAlpha(alpha);
-
-                    if (isQsbContainerPage(i)) {
-                        mQsbAlphaController.setAlphaAtIndex(alpha, QSB_ALPHA_INDEX_PAGE_SCROLL);
-                    }
                 }
             }
         }
@@ -2172,12 +2124,10 @@ public class Workspace extends PagedView
             page.setContentDescription(getPageDescription(pageNo));
 
             // No custom action for the first page.
-            if (!FeatureFlags.QSB_ON_FIRST_SCREEN || pageNo > 0) {
-                if (mPagesAccessibilityDelegate == null) {
-                    mPagesAccessibilityDelegate = new OverviewScreenAccessibilityDelegate(this);
-                }
-                page.setAccessibilityDelegate(mPagesAccessibilityDelegate);
+            if (mPagesAccessibilityDelegate == null) {
+                mPagesAccessibilityDelegate = new OverviewScreenAccessibilityDelegate(this);
             }
+            page.setAccessibilityDelegate(mPagesAccessibilityDelegate);
         } else {
             int accessible = mState == State.NORMAL ?
                     IMPORTANT_FOR_ACCESSIBILITY_AUTO :
@@ -4369,9 +4319,5 @@ public class Workspace extends PagedView
          * @param targetAnim animation which will be played during the transition or null.
          */
         void prepareStateChange(State toState, AnimatorSet targetAnim);
-    }
-
-    public static final boolean isQsbContainerPage(int pageNo) {
-        return pageNo == 0;
     }
 }

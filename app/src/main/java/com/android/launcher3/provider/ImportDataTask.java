@@ -133,16 +133,6 @@ public class ImportDataTask {
                 .getSerialNumberForUser(UserHandleCompat.myUserHandle()));
 
         boolean createEmptyRowOnFirstScreen = false;
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
-            try (Cursor c = mContext.getContentResolver().query(mOtherFavoritesUri, null,
-                    // get items on the first row of the first screen
-                    "profileId = ? AND container = -100 AND screen = ? AND cellY = 0",
-                    new String[]{profileId, Long.toString(firsetScreenId)},
-                    null)) {
-                // First row of first screen is not empty
-                createEmptyRowOnFirstScreen = c.moveToNext();
-            }
-        }
 
         ArrayList<ContentProviderOperation> insertOperations = new ArrayList<>(BATCH_INSERT_SIZE);
 
