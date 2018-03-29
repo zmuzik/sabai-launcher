@@ -61,3 +61,6 @@ google-services.json
 
 .idea/vcs.xml
 .idea/kotlinc.xml
+
+.idea/caches/
+.idea/codeStyles/
