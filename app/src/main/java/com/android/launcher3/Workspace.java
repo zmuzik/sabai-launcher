@@ -78,7 +78,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LongArrayMap;
-import com.android.launcher3.util.MultiStateAlphaController;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.VerticalFlingDetector;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
@@ -580,35 +579,6 @@ public class Workspace extends PagedView
     public void bindAndInitFirstWorkspaceScreen() {
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
-        if (FeatureFlags.PULLDOWN_NOTIF_BAR) {
-            firstPage.setOnTouchListener(new VerticalFlingDetector(mLauncher) {
-                // detect fling when touch started from empty space
-                @Override
-                public boolean onTouch(View v, MotionEvent ev) {
-                    if (workspaceInModalState()) return false;
-                    if (shouldConsumeTouch(v)) return true;
-                    if (super.onTouch(v, ev)) {
-                        expandNotificationsBar();
-                        return true;
-                    }
-                    return false;
-                }
-            });
-            firstPage.setOnInterceptTouchListener(new VerticalFlingDetector(mLauncher) {
-                // detect fling when touch started from on top of the icons
-                @Override
-                public boolean onTouch(View v, MotionEvent ev) {
-                    if (shouldConsumeTouch(v)) return true;
-                    if (super.onTouch(v, ev)) {
-                        expandNotificationsBar();
-                        return true;
-                    }
-                    return false;
-                }
-            });
-        }
-
-
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);
         lp.canReorder = false;
     }
@@ -695,6 +665,32 @@ public class Workspace extends PagedView
         if (mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
             newScreen.enableAccessibleDrag(true, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
         }
+
+        newScreen.setOnTouchListener(new VerticalFlingDetector(mLauncher) {
+            // detect fling when touch started from empty space
+            @Override
+            public boolean onTouch(View v, MotionEvent ev) {
+                if (workspaceInModalState()) return false;
+                if (shouldConsumeTouch(v)) return true;
+                if (super.onTouch(v, ev)) {
+                    expandNotificationsBar();
+                    return true;
+                }
+                return false;
+            }
+        });
+        newScreen.setOnInterceptTouchListener(new VerticalFlingDetector(mLauncher) {
+            // detect fling when touch started from on top of the icons
+            @Override
+            public boolean onTouch(View v, MotionEvent ev) {
+                if (shouldConsumeTouch(v)) return true;
+                if (super.onTouch(v, ev)) {
+                    expandNotificationsBar();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         return newScreen;
     }
