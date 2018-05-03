@@ -204,7 +204,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             } else {
                 mAllAppsPosition = Position.CENTER;
             }
-            mAllAppsPosition = Position.CENTER;
             mLauncher.getAppsView().setAllAppsPosition(mAllAppsPosition);
         }
         mCaretController.onDragStart();
