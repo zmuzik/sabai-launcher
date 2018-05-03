@@ -172,6 +172,13 @@ public class IconCache {
         try {
             resources = mPackageManager.getResourcesForApplication(
                     info.applicationInfo);
+//            if ("com.miui.smsextra".equals(info.packageName)) {
+//                return resources.getDrawable(R.mipmap.ic_launcher_mess);
+//            } else if ("com.android.phone".equals(info.packageName)) {
+//                return resources.getDrawable(R.mipmap.ic_launcher_phone);
+//            } else if ("com.android.contacts".equals(info.packageName)) {
+//                return resources.getDrawable(R.mipmap.ic_launcher_contacts);
+//            }
         } catch (PackageManager.NameNotFoundException e) {
             resources = null;
         }
